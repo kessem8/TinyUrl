@@ -53,7 +53,7 @@ namespace TinyUrl.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("error creating url", ex);
+                _logger.LogError("Error redirecting url", ex);
                 return StatusCode((int)HttpStatusCode.InternalServerError, "oops, something went wrong... try again later");
             }
         }
