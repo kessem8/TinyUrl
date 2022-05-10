@@ -4,8 +4,10 @@ using TinyUrl.Models;
 
 namespace TinyUrl.Database
 {
+
     public class UrlRepository : IUrlRepository
     {
+        private readonly static object locker = new object();
         private readonly IMongoCollection<Url> _urls;
 
         public UrlRepository(IDBClient dBClient)
@@ -35,7 +37,10 @@ namespace TinyUrl.Database
 
         public void Add(Url newUrl)
         {
-            _urls.InsertOne(newUrl);
+            lock (locker)
+            {
+                _urls.InsertOne(newUrl);
+            }
         }
 
         
