@@ -9,6 +9,7 @@ namespace TinyUrl.Database
     {
         private readonly static object locker = new object();
         private readonly IMongoCollection<Url> _urls;
+        
 
         public UrlRepository(IDBClient dBClient)
         {
