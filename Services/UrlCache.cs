@@ -12,46 +12,42 @@ namespace TinyUrl.Services
         public void Add(Url url)
         {
             _readersWritersSync.EnterRead();
-            bool isContainingKey = localCache.ContainsKey(url.FullUrl);
+            var isContainingFullUrl = localCache.Any(x => x.Value.FullUrl.Equals(url.FullUrl));
             int currentItemsCount = localCache.Count;
             _readersWritersSync.LeaveRead();
 
-            if (!isContainingKey)
+            if (!isContainingFullUrl)
             {
 
-                if (currentItemsCount <= Constants.CAPACITY)
+                if (currentItemsCount < Constants.CAPACITY)
                 {
                     _readersWritersSync.EnterWrite();
-                    localCache.TryAdd(url.FullUrl, url);
+                    localCache.TryAdd(url.Key, url);
                     _readersWritersSync.LeaveWrite();
                 }
                 else
-                {
+                {    // check what returns
                     _readersWritersSync.EnterRead();
                     var lessUsedUrl = localCache.Aggregate((l, r) => l.Value.UsageCount < r.Value.UsageCount ? l : r).Key;
                     _readersWritersSync.LeaveRead();
 
                     _readersWritersSync.EnterWrite();
                     localCache.TryRemove(lessUsedUrl, out _);
-                    localCache.TryAdd(url.FullUrl, url);
+                    localCache.TryAdd(url.Key, url);
                     _readersWritersSync.LeaveWrite();
                 }
             }
             else 
             {
                 _readersWritersSync.EnterWrite();
-                localCache[url.FullUrl].UsageCount++;
+                localCache[url.Key].UsageCount++;
                 _readersWritersSync.LeaveWrite();
             }
-
-
         }
-
 
         public Url GetValueBykey(string key)
         {
-            // return returnUrl;
-            return localCache.Values.FirstOrDefault(x => x.Key == key); 
+            return localCache[key]; 
         }
     }
 }
