@@ -26,7 +26,7 @@ namespace TinyUrl.Services
                     _readersWritersSync.LeaveWrite();
                 }
                 else
-                {    // check what returns
+                {    
                     _readersWritersSync.EnterRead();
                     var lessUsedUrl = localCache.Aggregate((l, r) => l.Value.UsageCount < r.Value.UsageCount ? l : r).Key;
                     _readersWritersSync.LeaveRead();
@@ -37,12 +37,6 @@ namespace TinyUrl.Services
                     _readersWritersSync.LeaveWrite();
                 }
             }
-            //else 
-            //{
-            //    _readersWritersSync.EnterWrite();
-            //    localCache[url.Key].UsageCount++;
-            //    _readersWritersSync.LeaveWrite();
-            //}
         }
 
         public Url GetValueBykey(string key)
