@@ -40,6 +40,11 @@ namespace TinyUrl.Services
             else
             {
                 newUrl = repository.GetUrlByFull(fullUrl);
+
+                int counter = newUrl.UsageCount;
+                newUrl.UsageCount = Interlocked.Increment(ref counter);
+
+                repository.UpdateCounter(fullUrl);
                 _urlCache.Add(newUrl);
             }
 

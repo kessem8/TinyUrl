@@ -9,5 +9,6 @@ namespace TinyUrl.Database
         bool IsExistByFull(string fullUrl);
         bool IsExistByKey(string key);
         void Add(Url url);
+        void UpdateCounter(string fullUrl);
     }
 }

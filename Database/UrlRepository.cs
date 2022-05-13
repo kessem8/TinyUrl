@@ -1,5 +1,7 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using System.Linq;
+using System.Threading.Tasks;
 using TinyUrl.Models;
 
 namespace TinyUrl.Database
@@ -42,6 +44,13 @@ namespace TinyUrl.Database
             {
                 _urls.InsertOne(newUrl);
             }
+        }
+
+        public void UpdateCounter(string fullUrl) 
+        {
+            var filter = Builders<Url>.Filter.And(Builders<Url>.Filter.Eq("FullUrl", fullUrl));
+            var updates = Builders<Url>.Update.Inc("UsageCount", 1);
+            _urls.UpdateOne(filter, updates);
         }
 
         

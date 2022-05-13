@@ -37,12 +37,12 @@ namespace TinyUrl.Services
                     _readersWritersSync.LeaveWrite();
                 }
             }
-            else 
-            {
-                _readersWritersSync.EnterWrite();
-                localCache[url.Key].UsageCount++;
-                _readersWritersSync.LeaveWrite();
-            }
+            //else 
+            //{
+            //    _readersWritersSync.EnterWrite();
+            //    localCache[url.Key].UsageCount++;
+            //    _readersWritersSync.LeaveWrite();
+            //}
         }
 
         public Url GetValueBykey(string key)
