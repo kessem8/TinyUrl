@@ -12,6 +12,8 @@ namespace TinyUrl.Services
     {
         private readonly IUrlRepository repository;
         private readonly IUrlCache _urlCache;
+        private object _syncToken = new object();
+
 
         public UrlServices(IUrlRepository repository, IUrlCache urlCache)
         {
@@ -23,45 +25,45 @@ namespace TinyUrl.Services
         {
             Url newUrl;
 
-            if (!repository.IsExistByFull(fullUrl))
+            lock (_syncToken)
             {
-                newUrl = new Url
+                if (!repository.IsExistByFull(fullUrl))
                 {
-                    Key = KeyGenerator.Instance.CreateMD5Hash(fullUrl),
-                    CreationTime = DateTime.Now,
-                    FullUrl = fullUrl,
-                    Id = Guid.NewGuid().ToString(),
-                    UsageCount = 1
-                };
+                    newUrl = new Url
+                    {
+                        Key = KeyGenerator.Instance.CreateMD5Hash(fullUrl),
+                        CreationTime = DateTime.Now,
+                        FullUrl = fullUrl,
+                        Id = Guid.NewGuid().ToString(),
+                        UsageCount = 0
+                    };
 
-                repository.Add(newUrl);
-                _urlCache.Add(newUrl);
+                    repository.Add(newUrl);
+                }
+                else
+                {
+                    newUrl = repository.GetUrlByFull(fullUrl);
+                }
             }
-            else
-            {
-                newUrl = repository.GetUrlByFull(fullUrl);
-
-                int counter = newUrl.UsageCount;
-                newUrl.UsageCount = Interlocked.Increment(ref counter);
-
-                repository.UpdateCounter(fullUrl);
-                _urlCache.Add(newUrl);
-            }
+            _urlCache.Add(newUrl);
 
             return newUrl;
         }
 
         public string GetFullUrl(string key)
-        {            
-            Url url = _urlCache.GetValueBykey(key);
+        {
+            Url url = _urlCache.GetValueBykey(key) ?? repository.GetFullByKey(key);
+
             if (url != null)
             {
+                int counter = url.UsageCount;
+                url.UsageCount = Interlocked.Increment(ref counter);
                 return url.FullUrl;
             }
             else
             {
-                return repository.GetFullByKey(key);
-            }            
+                return null;
+            }
         }
 
     }

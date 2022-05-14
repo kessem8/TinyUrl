@@ -9,18 +9,17 @@ namespace TinyUrl.Database
 
     public class UrlRepository : IUrlRepository
     {
-        private readonly static object locker = new object();
         private readonly IMongoCollection<Url> _urls;
-        
+
 
         public UrlRepository(IDBClient dBClient)
         {
             _urls = dBClient.MongoDatabase.GetCollection<Url>(typeof(Url).Name);
         }
 
-        public string GetFullByKey(string key)
+        public Url GetFullByKey(string key)
         {
-            return _urls.Find(x => x.Key == key).First().FullUrl;
+            return _urls.Find(x => x.Key == key).First();
         }
 
         public Url GetUrlByFull(string fullUrl)
@@ -40,19 +39,16 @@ namespace TinyUrl.Database
 
         public void Add(Url newUrl)
         {
-            lock (locker)
-            {
-                _urls.InsertOne(newUrl);
-            }
+            _urls.InsertOne(newUrl);
         }
 
-        public void UpdateCounter(string fullUrl) 
+        public void UpdateCounter(string fullUrl)
         {
             var filter = Builders<Url>.Filter.And(Builders<Url>.Filter.Eq("FullUrl", fullUrl));
             var updates = Builders<Url>.Update.Inc("UsageCount", 1);
             _urls.UpdateOne(filter, updates);
         }
 
-        
+
     }
 }
