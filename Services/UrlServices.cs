@@ -58,6 +58,7 @@ namespace TinyUrl.Services
             {
                 int counter = url.UsageCount;
                 url.UsageCount = Interlocked.Increment(ref counter);
+                repository.UpdateCounter(url.FullUrl);
                 return url.FullUrl;
             }
             else
