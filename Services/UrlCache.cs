@@ -39,7 +39,7 @@ namespace TinyUrl.Services
             }
         }
 
-        public Url GetValueBykey(string key)
+        public Url GeUrlBykey(string key)
         {
             return localCache[key]; 
         }

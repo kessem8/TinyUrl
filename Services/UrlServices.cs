@@ -52,7 +52,7 @@ namespace TinyUrl.Services
 
         public string GetFullUrl(string key)
         {
-            Url url = _urlCache.GetValueBykey(key) ?? repository.GetFullByKey(key);
+            Url url = _urlCache.GeUrlBykey(key) ?? repository.GetUrlByKey(key);
 
             if (url != null)
             {

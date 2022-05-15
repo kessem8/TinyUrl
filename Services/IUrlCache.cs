@@ -9,6 +9,6 @@ namespace TinyUrl.Services
     public interface IUrlCache
     {
         void Add(Url url);
-        Url GetValueBykey(string key);
+        Url GeUrlBykey(string key);
     }
 }

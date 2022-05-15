@@ -17,7 +17,7 @@ namespace TinyUrl.Database
             _urls = dBClient.MongoDatabase.GetCollection<Url>(typeof(Url).Name);
         }
 
-        public Url GetFullByKey(string key)
+        public Url GetUrlByKey(string key)
         {
             return _urls.Find(x => x.Key == key).First();
         }

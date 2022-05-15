@@ -35,7 +35,7 @@ namespace TinyUrl.Services
             return;
         }
 
-        public Url GetValueBykey(string key)
+        public Url GeUrlBykey(string key)
         {
             return localCache.Values.FirstOrDefault(x => x.Key == key); 
         }

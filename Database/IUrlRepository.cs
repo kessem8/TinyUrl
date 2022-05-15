@@ -4,7 +4,7 @@ namespace TinyUrl.Database
 {
     public interface IUrlRepository
     {
-        Url GetFullByKey(string key);
+        Url GetUrlByKey(string key);
         Url GetUrlByFull(string fullUrl);
         bool IsExistByFull(string fullUrl);
         bool IsExistByKey(string key);
